@@ -375,23 +375,27 @@ class HubConnection {
   }
 
   Future<void> _reconnect({Exception? exception}) async {
-    final reconnectStartTime = Stopwatch()..start();
-    //final reconnectStartTime = DateTime.now();
-    var previousReconnectAttempts = 0;
-    var retryError = (exception != null)
-        ? exception
-        : Exception('Attempting to reconnect due to a unknown error.');
+    try {
+      final reconnectStartTime = Stopwatch()..start();
+      //final reconnectStartTime = DateTime.now();
+      var previousReconnectAttempts = 0;
+      var retryError = (exception != null)
+              ? exception
+              : Exception('Attempting to reconnect due to a unknown error.');
 
-    var nextRetryDelay = _getNextRetryDelay(
-        previousRetryCount: previousReconnectAttempts++,
-        elapsedMilliseconds: 0,
-        retryReason: retryError);
+      var nextRetryDelay = _getNextRetryDelay(
+              previousRetryCount: previousReconnectAttempts++,
+              elapsedMilliseconds: 0,
+              retryReason: retryError);
 
-    if (nextRetryDelay == null) {
-      _logger!(LogLevel.debug,
-          'Connection not reconnecting because the RetryPolicy returned null on the first reconnect attempt.');
-      _completeClose(exception: exception);
-      return;
+      if (nextRetryDelay == null) {
+            _logger!(LogLevel.debug,
+                'Connection not reconnecting because the RetryPolicy returned null on the first reconnect attempt.');
+            _completeClose(exception: exception);
+            return;
+          }
+    } catch (e) {
+      print("Errore----->: " + e);
     }
 
     _connectionState = HubConnectionState.reconnecting;
