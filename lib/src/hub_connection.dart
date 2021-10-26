@@ -375,7 +375,7 @@ class HubConnection {
   }
 
   Future<void> _reconnect({Exception? exception}) async {
-
+//s
       final reconnectStartTime = Stopwatch()..start();
       //final reconnectStartTime = DateTime.now();
       var previousReconnectAttempts = 0;
