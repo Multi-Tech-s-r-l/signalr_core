@@ -481,7 +481,7 @@ class HubConnection {
 
     _completeClose();
     } catch (e) {
-      print("Errore----->: " + e);
+      print("Errore----->: " + e.toString());
     }
   }
 
