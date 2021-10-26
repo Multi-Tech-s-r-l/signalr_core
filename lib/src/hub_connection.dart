@@ -7,7 +7,7 @@ import 'package:signalr_core/src/hub_protocol.dart';
 import 'package:signalr_core/src/logger.dart';
 import 'package:signalr_core/src/retry_policy.dart';
 import 'package:tuple/tuple.dart';
-const bool kIsWeb = identical(0, 0.0);
+const bool isWeb = identical(0, 0.0);
 typedef InvocationEventCallback = void Function(
     HubMessage? invocationEvent, Exception? exception);
 typedef MethodInvocationFunc = void Function(List<dynamic>? arguments);
@@ -950,7 +950,7 @@ class HubConnection {
       _completeClose(exception: exception);
     } else if ((_connectionState == HubConnectionState.connected) &&
         _reconnectPolicy != null) {
-      if (kIsWeb){
+      if (isWeb){
         print("Reconnect web");
         _reconnectWeb(exception: exception);
       } else {
