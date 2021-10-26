@@ -375,14 +375,14 @@ class HubConnection {
   }
 
   Future<void> _reconnect({Exception? exception}) async {
-    try {
+
       final reconnectStartTime = Stopwatch()..start();
       //final reconnectStartTime = DateTime.now();
       var previousReconnectAttempts = 0;
       var retryError = (exception != null)
               ? exception
               : Exception('Attempting to reconnect due to a unknown error.');
-
+      try {
       var nextRetryDelay = _getNextRetryDelay(
               previousRetryCount: previousReconnectAttempts++,
               elapsedMilliseconds: 0,
