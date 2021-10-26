@@ -383,7 +383,7 @@ class HubConnection {
 /*      var retryError = (exception != null)
               ? exception
               : Exception('Attempting to reconnect due to a unknown error.');*/
-      print("Try print exception");
+      /*print("Try print exception");
 
       if (exception!=null){
         try {
@@ -394,7 +394,7 @@ class HubConnection {
         }
       } else {
         print("Exception is null");
-      }
+      }*/
 
       print("Costruisco retryError");
 
