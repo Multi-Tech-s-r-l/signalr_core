@@ -380,25 +380,21 @@ class HubConnection {
       final reconnectStartTime = Stopwatch()..start();
       //final reconnectStartTime = DateTime.now();
       var previousReconnectAttempts = 0;
-/*      var retryError = (exception != null)
-              ? exception
-              : Exception('Attempting to reconnect due to a unknown error.');*/
-      /*print("Try print exception");
 
-      if (exception!=null){
-        try {
-          print("Exception: " + exception.toString());
-        } catch (e) {
-          print("Errore print exception");
-          print(e);
-        }
-      } else {
-        print("Exception is null");
-      }*/
+
+      try {
+        exception.toString();
+
+      } catch (e) {
+        exception = Exception('Attempting to reconnect due to a unknown error.');
+      }
 
       print("Costruisco retryError");
 
-      var retryError = Exception('Attempting to reconnect due to a unknown error.');
+      var retryError = (exception != null)
+              ? exception
+              : Exception('Attempting to reconnect due to a unknown error.');
+
 
       print("retryError costruito");
 
