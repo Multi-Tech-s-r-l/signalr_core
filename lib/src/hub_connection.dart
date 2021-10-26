@@ -7,7 +7,7 @@ import 'package:signalr_core/src/hub_protocol.dart';
 import 'package:signalr_core/src/logger.dart';
 import 'package:signalr_core/src/retry_policy.dart';
 import 'package:tuple/tuple.dart';
-
+const bool kIsWeb = identical(0, 0.0);
 typedef InvocationEventCallback = void Function(
     HubMessage? invocationEvent, Exception? exception);
 typedef MethodInvocationFunc = void Function(List<dynamic>? arguments);
@@ -505,6 +505,121 @@ class HubConnection {
     }
   }
 
+
+
+  Future<void> _reconnectWeb({Exception? exception}) async {
+//s
+    try {
+      final reconnectStartTime = Stopwatch()..start();
+      //final reconnectStartTime = DateTime.now();
+      var previousReconnectAttempts = 0;
+
+
+      print("Costruisco retryError");
+
+      var retryError = Exception('Attempting to reconnect due to a unknown error.');
+
+      var nextRetryDelay = _getNextRetryDelay(
+          previousRetryCount: previousReconnectAttempts++,
+          elapsedMilliseconds: 0,
+          retryReason: retryError);
+
+      if (nextRetryDelay == null) {
+        _logger!(LogLevel.debug,
+            'Connection not reconnecting because the RetryPolicy returned null on the first reconnect attempt.');
+        _completeClose(exception: retryError);
+        return;
+      }
+
+
+      _connectionState = HubConnectionState.reconnecting;
+
+      if (retryError != null) {
+        _logger!(LogLevel.information,
+            'Connection reconnecting because of error \'${retryError.toString()}\'.');
+      } else {
+        _logger!(LogLevel.information, 'Connection reconnecting.');
+      }
+
+      try {
+        for (var callback in _reconnectingCallbacks) {
+          callback(retryError);
+        }
+      } catch (e) {
+        _logger!(LogLevel.error,
+            'An onreconnecting callback called with error \'${retryError.toString()}\' threw error \'${e.toString()}\'.');
+      }
+
+      // Exit early if an onreconnecting callback called connection.stop().
+      if (_connectionState != HubConnectionState.reconnecting) {
+        _logger!(LogLevel.debug,
+            'Connection left the reconnecting state in onreconnecting callback. Done reconnecting.');
+        return;
+      }
+
+      while (nextRetryDelay != null) {
+        _logger!(LogLevel.information,
+            'Reconnect attempt number $previousReconnectAttempts will start in $nextRetryDelay ms.');
+
+        await Future(() {
+          var completer = Completer();
+          _reconnectDelayHandle = Timer(Duration(milliseconds: nextRetryDelay!),
+                  () => completer.complete());
+          return completer.future;
+        });
+        _reconnectDelayHandle = null;
+
+        if (_connectionState == null ||
+            _connectionState != HubConnectionState.reconnecting) {
+          _logger!(LogLevel.debug,
+              'Connection left the reconnecting state during reconnect delay. Done reconnecting.');
+          return;
+        }
+
+        try {
+          await _startInternal();
+
+          _connectionState = HubConnectionState.connected;
+          _logger!(
+              LogLevel.information, 'HubConnection reconnected successfully.');
+
+          try {
+            for (var callback in _reconnectedCallbacks) {
+              callback(_connection!.connectionId);
+            }
+          } catch (e) {
+            _logger!(LogLevel.error,
+                'An onreconnected callback called with connectionId \'${_connection!.connectionId}; threw error \'${e.toString()}\'.');
+          }
+
+          return;
+        } catch (e) {
+          _logger!(LogLevel.information,
+              'Reconnect attempt failed because of error \'${e.toString()}\'.');
+
+          if (_connectionState != HubConnectionState.reconnecting) {
+            _logger!(LogLevel.debug,
+                'Connection left the reconnecting state during reconnect attempt. Done reconnecting.');
+            return;
+          }
+
+          retryError = (e is Exception) ? e : Exception(e.toString());
+          nextRetryDelay = _getNextRetryDelay(
+            previousRetryCount: previousReconnectAttempts++,
+            elapsedMilliseconds: reconnectStartTime.elapsedMilliseconds,
+            retryReason: retryError,
+          );
+        }
+      }
+
+      _logger!(LogLevel.information,
+          'Reconnect retries have been exhausted after ${reconnectStartTime.elapsedMilliseconds} ms and $previousReconnectAttempts failed attempts. Connection disconnecting.');
+
+      _completeClose();
+    } catch (e) {
+      print("Errore----->: " + e.toString());
+    }
+  }
   int? _getNextRetryDelay({
     int? previousRetryCount,
     int? elapsedMilliseconds,
@@ -835,7 +950,13 @@ class HubConnection {
       _completeClose(exception: exception);
     } else if ((_connectionState == HubConnectionState.connected) &&
         _reconnectPolicy != null) {
-      _reconnect(exception: exception);
+      if (kIsWeb){
+        print("Reconnect web");
+        _reconnectWeb(exception: exception);
+      } else {
+        _reconnect(exception: exception);
+      }
+
     } else if (_connectionState == HubConnectionState.connected) {
       _completeClose(exception: exception);
     }
