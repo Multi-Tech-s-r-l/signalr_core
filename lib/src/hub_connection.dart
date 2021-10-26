@@ -381,7 +381,7 @@ class HubConnection {
       //final reconnectStartTime = DateTime.now();
       var previousReconnectAttempts = 0;
 
-
+      print("Costruisco retryssssssError");
       try {
         exception.toString();
 
