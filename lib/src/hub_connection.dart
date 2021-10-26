@@ -383,9 +383,13 @@ class HubConnection {
 
       print("Costruisco retryssssssError");
       try {
+        print("try print");
+
         exception.toString();
 
       } catch (e) {
+        print("try reinit");
+
         exception = Exception('Attempting to reconnect due to a unknown error.');
       }
 
