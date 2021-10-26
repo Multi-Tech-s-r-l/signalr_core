@@ -394,9 +394,7 @@ class HubConnection {
             _completeClose(exception: exception);
             return;
           }
-    } catch (e) {
-      print("Errore----->: " + e);
-    }
+
 
     _connectionState = HubConnectionState.reconnecting;
 
@@ -482,6 +480,9 @@ class HubConnection {
         'Reconnect retries have been exhausted after ${reconnectStartTime.elapsedMilliseconds} ms and $previousReconnectAttempts failed attempts. Connection disconnecting.');
 
     _completeClose();
+    } catch (e) {
+      print("Errore----->: " + e);
+    }
   }
 
   int? _getNextRetryDelay({
