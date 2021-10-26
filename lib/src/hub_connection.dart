@@ -376,13 +376,15 @@ class HubConnection {
 
   Future<void> _reconnect({Exception? exception}) async {
 //s
+    try {
       final reconnectStartTime = Stopwatch()..start();
       //final reconnectStartTime = DateTime.now();
       var previousReconnectAttempts = 0;
 /*      var retryError = (exception != null)
               ? exception
               : Exception('Attempting to reconnect due to a unknown error.');*/
-    try {
+      print("Try print exception");
+
       if (exception!=null){
         try {
           print("Exception: " + exception.toString());
@@ -390,11 +392,17 @@ class HubConnection {
           print("Errore print exception");
           print(e);
         }
+      } else {
+        print("Exception is null");
       }
+
+      print("Costruisco retryError");
 
       var retryError = Exception('Attempting to reconnect due to a unknown error.');
 
+      print("retryError costruito");
 
+      print("nextRetryDelay");
       var nextRetryDelay = _getNextRetryDelay(
               previousRetryCount: previousReconnectAttempts++,
               elapsedMilliseconds: 0,
