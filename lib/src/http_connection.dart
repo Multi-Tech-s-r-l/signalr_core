@@ -403,6 +403,10 @@ class HttpConnection implements Connection {
       }
     }
 
+    if (_options.customHeaders != null) {
+      headers.addAll(_options.customHeaders!);
+    }
+
     final negotiateUrl = _resolveNegotiateUrl(url);
     _logging!(LogLevel.debug, 'Sending negotiation request: $negotiateUrl.');
 

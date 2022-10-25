@@ -12,6 +12,7 @@ class HttpConnectionOptions {
     this.logMessageContent = false,
     this.skipNegotiation = false,
     this.withCredentials = true,
+    this.customHeaders,
   });
 
   /// An [BaseClient] that will be used to make HTTP requests.
@@ -44,4 +45,7 @@ class HttpConnectionOptions {
   ///
   /// Cookies are used by many load-balancers for sticky sessions which is required when your app is deployed with multiple servers.
   final bool withCredentials;
+
+  /// custom headers sent with the negotiating HTTP request
+  final Map<String, String>? customHeaders;
 }
