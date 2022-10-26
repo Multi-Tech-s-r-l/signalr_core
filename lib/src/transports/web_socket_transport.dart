@@ -17,6 +17,7 @@ class WebSocketTransport implements Transport {
   final AccessTokenFactory? _accessTokenFactory;
   final bool? _logMessageContent;
   final BaseClient? _client;
+  final Map<String, String>? customHeaders;
 
   StreamSubscription<dynamic>? _streamSubscription;
   WebSocketChannel? _channel;
@@ -26,6 +27,7 @@ class WebSocketTransport implements Transport {
     AccessTokenFactory? accessTokenFactory,
     Logging? logging,
     bool? logMessageContent,
+    this.customHeaders,
   })  : _logging = logging,
         _accessTokenFactory = accessTokenFactory,
         _logMessageContent = logMessageContent,
@@ -52,6 +54,12 @@ class WebSocketTransport implements Transport {
       if (token!.isNotEmpty) {
         final encodedToken = Uri.encodeComponent(token);
         url = url! + (url.contains('?') ? '&' : '?') + 'access_token=$encodedToken';
+        if (customHeaders!=null && customHeaders!.isNotEmpty){
+          for (var entry in customHeaders!.entries){
+            url = url! + '&${entry.key}=${entry.value}';
+          }
+
+        }
       }
     }
 

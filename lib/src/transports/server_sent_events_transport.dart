@@ -13,6 +13,7 @@ class ServerSentEventsTransport implements Transport {
   final Logging? _log;
   final bool? _logMessageContent;
   final bool? _withCredentials;
+  final Map<String, String>? customHeaders;
   String? _url;
   SseClient? _sseClient;
 
@@ -22,6 +23,7 @@ class ServerSentEventsTransport implements Transport {
     Logging? logging,
     bool? logMessageContent,
     bool? withCredentials,
+    required this.customHeaders,
   })  : _client = client,
         _accessTokenFactory = accessTokenFactory,
         _log = logging,
@@ -50,6 +52,12 @@ class ServerSentEventsTransport implements Transport {
         _url = _url! +
             (!url!.contains('?') ? '?' : '&') +
             'access_token=${Uri.encodeComponent(token)}';
+        if (customHeaders!=null && customHeaders!.isNotEmpty){
+          for (var entry in customHeaders!.entries){
+            url = url! + '&${entry.key}=${entry.value}';
+          }
+
+        }
       }
     }
 

@@ -620,7 +620,8 @@ class HttpConnection implements Connection {
             accessTokenFactory: _accessTokenFactory,
             logMessageContent: _options.logMessageContent,
             logging: _logging,
-            client: _client);
+            client: _client,
+        customHeaders: _options.customHeaders);
       case HttpTransportType.longPolling:
         return LongPollingTransport(
             accessTokenFactory: _accessTokenFactory,
