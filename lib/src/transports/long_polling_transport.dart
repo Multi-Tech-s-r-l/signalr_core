@@ -14,6 +14,7 @@ class LongPollingTransport implements Transport {
   late bool _running;
   Future<void>? _receiving;
   Exception? _closeError;
+  final Map<String, String>? customHeaders;
 
   LongPollingTransport({
     BaseClient? client,
@@ -21,6 +22,7 @@ class LongPollingTransport implements Transport {
     Logging? log,
     bool? logMessageContent,
     bool? withCredentials,
+    this.customHeaders,
   })  : _client = client,
         _accessTokenFactory = accessTokenFactory,
         _log = log,
@@ -50,6 +52,9 @@ class LongPollingTransport implements Transport {
     final token = await _getAccessToken();
     if (token != null) {
       headers['Authorization'] = 'Bearer $token';
+    }
+    if (customHeaders!=null && customHeaders!.isNotEmpty){
+      headers.addAll(customHeaders!);
     }
 
     // Make initial long polling request

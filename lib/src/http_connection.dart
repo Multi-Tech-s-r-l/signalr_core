@@ -614,6 +614,7 @@ class HttpConnection implements Connection {
             accessTokenFactory: _accessTokenFactory,
             logging: _logging,
             logMessageContent: _options.logMessageContent,
+            customHeaders: _options.customHeaders,
             client: _client);
       case HttpTransportType.serverSentEvents:
         return ServerSentEventsTransport(
@@ -627,7 +628,8 @@ class HttpConnection implements Connection {
             accessTokenFactory: _accessTokenFactory,
             logMessageContent: _options.logMessageContent,
             log: _logging,
-            client: _client);
+            client: _client,
+        customHeaders: _options.customHeaders);
     }
     return null;
   }
