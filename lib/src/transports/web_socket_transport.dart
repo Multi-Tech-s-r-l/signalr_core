@@ -54,15 +54,15 @@ class WebSocketTransport implements Transport {
       if (token!.isNotEmpty) {
         final encodedToken = Uri.encodeComponent(token);
         url = url! + (url.contains('?') ? '&' : '?') + 'access_token=$encodedToken';
-        if (customHeaders!=null && customHeaders!.isNotEmpty){
-          for (var entry in customHeaders!.entries){
-            url = url! + '&${entry.key}=${entry.value}';
-          }
 
-        }
       }
     }
+    if (customHeaders!=null && customHeaders!.isNotEmpty){
+      for (var entry in customHeaders!.entries){
+        url = url! + (url.contains('?') ? '&' : '?') + '${entry.key}=${entry.value}';
+      }
 
+    }
     final connectFuture = Completer<void>();
     var opened = false;
 

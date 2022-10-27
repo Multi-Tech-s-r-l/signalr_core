@@ -52,15 +52,15 @@ class ServerSentEventsTransport implements Transport {
         _url = _url! +
             (!url!.contains('?') ? '?' : '&') +
             'access_token=${Uri.encodeComponent(token)}';
-        if (customHeaders!=null && customHeaders!.isNotEmpty){
-          for (var entry in customHeaders!.entries){
-            url = url! + '&${entry.key}=${entry.value}';
-          }
 
-        }
       }
     }
+    if (customHeaders!=null && customHeaders!.isNotEmpty){
+      for (var entry in customHeaders!.entries){
+        _url = _url! + (!_url!.contains('?') ? '?' : '&') + '${entry.key}=${entry.value}';
+      }
 
+    }
     var completer = Completer<void>();
 
     var opened = false;
