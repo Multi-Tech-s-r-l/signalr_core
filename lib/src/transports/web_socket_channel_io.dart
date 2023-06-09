@@ -9,7 +9,8 @@ import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 Future<WebSocketChannel> connect(
-  Uri uri, {
+  Uri uri,
+    Map<String, String> customHeaders, {
   required BaseClient client,
 }) async {
   var random = Random();
