@@ -68,7 +68,7 @@ class WebSocketTransport implements Transport {
 
     url = url!.replaceFirst(RegExp(r'^http'), 'ws');
 
-    _channel = await platform.connect(Uri.parse(url), client: _client!);
+    _channel = await platform.connect(Uri.parse(url), customHeaders!, client: _client!);
 
     _logging!(LogLevel.information, 'WebSocket connected to $url.');
     opened = true;
