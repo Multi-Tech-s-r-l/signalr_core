@@ -49,26 +49,38 @@ class WebSocketTransport implements Transport {
 
     _logging!(LogLevel.trace, '(WebSockets transport) Connecting.');
 
+
     if (_accessTokenFactory != null) {
+      _logging!(LogLevel.trace, '(WebSockets transport) AccessTokenFactory');
       final token = await _accessTokenFactory!();
       if (token!.isNotEmpty) {
         final encodedToken = Uri.encodeComponent(token);
-        url = url! + (url.contains('?') ? '&' : '?') + 'access_token=$encodedToken';
+        if (url!=null) {
+          url = url + (url.contains('?') ? '&' : '?') +
+              'access_token=$encodedToken';
+        }
 
       }
     }
     if (customHeaders!=null && customHeaders!.isNotEmpty){
+      _logging!(LogLevel.trace, '(WebSockets transport) CustomHeaders');
       for (var entry in customHeaders!.entries){
-        url = url! + (url.contains('?') ? '&' : '?') + '${entry.key}=${entry.value}';
+        if (url!=null) {
+          url = url + (url.contains('?') ? '&' : '?') +
+              '${entry.key}=${entry.value}';
+        }
       }
 
     }
     final connectFuture = Completer<void>();
     var opened = false;
 
-    url = url!.replaceFirst(RegExp(r'^http'), 'ws');
+    url = url?.replaceFirst(RegExp(r'^http'), 'ws');
 
-    _channel = await platform.connect(Uri.parse(url), customHeaders!, client: _client!);
+    if (url!=null) {
+      _channel =
+      await platform.connect(Uri.parse(url), customHeaders ?? {}, client: _client!);
+    }
 
     _logging!(LogLevel.information, 'WebSocket connected to $url.');
     opened = true;
