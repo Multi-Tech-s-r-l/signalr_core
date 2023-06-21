@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 import 'package:signalr_core/src/logger.dart';
 import 'package:signalr_core/src/transport.dart';
 import 'package:signalr_core/src/utils.dart';
-import 'package:sse_channel/sse_channel.dart';
+import 'package:sse_client/sse_client.dart';
 
 
 class ServerSentEventsTransport implements Transport {
@@ -15,7 +15,7 @@ class ServerSentEventsTransport implements Transport {
   final bool? _withCredentials;
   final Map<String, String>? customHeaders;
   String? _url;
-  SseChannel? _sseClient;
+  SseClient? _sseClient;
 
   ServerSentEventsTransport({
     BaseClient? client,
@@ -61,6 +61,7 @@ class ServerSentEventsTransport implements Transport {
       }
 
     }
+    _log!(LogLevel.information, 'SSE _url: $_url');
     var completer = Completer<void>();
 
     var opened = false;
@@ -71,9 +72,9 @@ class ServerSentEventsTransport implements Transport {
       );
     }
 
-    SseChannel? client;
+    SseClient? client;
     try {
-      client = SseChannel.connect(Uri.parse(url!), );
+      client = SseClient.connect(Uri.parse(url!), );
       _log!(LogLevel.information, 'SSE connected to $_url');
       opened = true;
       _sseClient =client;

@@ -12,7 +12,8 @@ dependencies:
   meta: ^1.3.0
   tuple: ^2.0.0
   web_socket_channel: ^2.1.0
-  sse_channel:
+  sse_client:
+    git: https://github.com/jamiewest/sse_client
   equatable: ^2.0.0
 
 dev_dependencies:
