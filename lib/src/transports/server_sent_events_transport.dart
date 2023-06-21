@@ -73,12 +73,13 @@ class ServerSentEventsTransport implements Transport {
 
     SseChannel? client;
     try {
-      client = SseChannel.connect(Uri.parse(url!));
+      client = SseChannel.connect(Uri.parse(url!), );
       _log!(LogLevel.information, 'SSE connected to $_url');
       opened = true;
       _sseClient =client;
       completer.complete();
     } catch (e) {
+      _log!(LogLevel.information, 'SSE error: ${e.toString()}');
       return completer.completeError(e);
     }
 
@@ -103,6 +104,8 @@ class ServerSentEventsTransport implements Transport {
       return Future.error(
           Exception('Cannot send until the transport is connected'));
     }
+    _log!(LogLevel.trace,
+        '(SSE transport) send data. $data');
     return sendMessage(
       _log!,
       'SSE',
